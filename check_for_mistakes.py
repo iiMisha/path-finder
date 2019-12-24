@@ -141,39 +141,7 @@ class KPDialog(Dialog):
 			print ('cant parse penalty')
 			return 0
 		return 1
-		
-class DistanceDialog(Dialog):
-	#distance = 0.0
-	result = 0.0
-	isApplied = False
 	
-	def __init__(self,parent,title=None,distance=0.0):
-		self.distance = distance
-		print (distance)
-		Dialog.__init__(self,parent,title)		
-	
-	def body(self, master):
-		#print ('dialog')		
-		Label(master, text="Выделенная дистанция в точках: %f"%(self.distance)).grid(row=0,columnspan=2)
-		Label(master, text="Введите эту дистанцию (в см или км)").grid(row=1)
-
-		self.e2 = Entry(master)
-
-		self.e2.grid(row=1, column=1)
-		return self.e2 # initial focus
-
-	def apply(self):
-				
-		self.isApplied = True
-		
-	def validate(self):
-		try:
-			self.result = float(self.e2.get())
-		except:
-			return 0
-		return 1		
-
-		
 class MyScrollbar(Scrollbar):
 	currentBegin = 0.0
 	currentEnd = 0.0
@@ -241,27 +209,6 @@ g_firstClick = True
 g_firstCoords = (0,0)
 g_factor = None
 
-def rightClick(event): #TODO перейти на realCoordinate
-	global g_firstClick
-	global g_firstCoords
-	global g_factor
-	if g_firstClick:
-		g_firstCoords=(event.x,event.y)
-		g_firstClick = False
-	else:
-		distance = math.sqrt(pow(event.x-g_firstCoords[0],2) + pow(event.y-g_firstCoords[1],2))
-		print (distance)
-		d = DistanceDialog(root,distance=distance)
-		if not d.isApplied:
-			g_firstClick = True
-			g_firstCoords = (0,0)
-			return
-		result = d.result
-		g_factor = result/distance
-		text = "Дистанция на 100 точек теперь составляет %f" %(g_factor*100)
-		showinfo('info',text)
-		g_firstClick = True
-		g_firstCoords = (0,0)
 		
 	
 	
@@ -299,8 +246,6 @@ if __name__ == '__main__':
 	canvas = Canvas(frame, width=1200,height=800,bd=0, xscrollcommand=xscrollbar.set, yscrollcommand=yscrollbar.set, xscrollincrement = 10, yscrollincrement = 10)
 	canvas.grid(row=0, column=0, sticky=N+S+E+W)
 
-	File = "map_om.gif"
-
 	photo = PhotoImage(file = map_name)
 	map_h = photo.height()
 	map_w = photo.width()
@@ -311,16 +256,10 @@ if __name__ == '__main__':
 	frame.pack()
 
 	canvas.bind('<Button-1>',leftClick)
-	canvas.bind('<Button-3>',rightClick)
+	#canvas.bind('<Button-3>',rightClick)
 	
 	points = []
 	#canvas.bind('<Motion>', getXY)
 	root.bind('<Key>',key)
 	root.mainloop()
-	out = open(outfile,'w')
-	result = {}
-	result['points'] = points
-	result['factor'] = g_factor
-	out.write(json.dumps(result))
-	out.close()
 	
