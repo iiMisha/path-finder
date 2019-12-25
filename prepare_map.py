@@ -81,7 +81,7 @@ def plot_circles_on_img(filename,circles):
 
     if circles is not None:
         
-        print (circles.shape)
+        #print (circles.shape)
         for _,row in circles.iterrows():
             center = (row.x, row.y)
             # circle center
@@ -164,7 +164,8 @@ if __name__ == '__main__':
     points.to_csv(output_datafile,index=False)
     img_new = plot_circles_on_img(input_filename,points)
     #TODO save image
-    #img_new.save(output_filename)
+    img_new = cv2.cvtColor(img_new,cv2.COLOR_BGR2RGB)
+    cv2.imwrite(output_filename, img_new)
 
 
 

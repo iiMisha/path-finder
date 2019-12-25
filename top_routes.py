@@ -77,13 +77,24 @@ def kp_gen(kp_str):
 
 def print_top():
     best = top[0][1]
+    res = ''
     for t in top:
-        print (np.concatenate([[start],t[0].astype(int),[finish]])[:,3],            '%.3f км'%(t[1]*factor),            '(-%.3f,'%((t[1]-best)*factor),            '%.2f%%)' % ((t[1]-best)*100./best))
+        st = '[%s] %s (%s %s)' % (' '.join(np.concatenate([[start],t[0],[finish]])[:,3]), 
+            '%.3f км'%(t[1]*factor), 
+            '(-%.3f,'%((t[1]-best)*factor), 
+            '%.2f%%)' % ((t[1]-best)*100./best))
+        print (st)
+        res += st+'\n'
+    return res
         
 def print_top_with_skipped():
     best = top[0][1]
     for t in top:
-        print (np.concatenate([[start],t[0].astype(int),[finish]])[:,3],            (list(set(all_points[:,3]) - set(t[0][:,3]) - set([start[3],finish[3]]))),            '%.3f км'%(t[1]*factor),            '(-%.3f,'%((t[1]-best)*factor),            '%.2f%%)' % ((t[1]-best)*100./best))
+        st = '[%s] [%s] %s (%s %s)' %  (' '.join(np.concatenate([[start],t[0],[finish]])[:,3]),
+            ' '.join((list(set(all_points[:,3]) - set(t[0][:,3]) - set([start[3],finish[3]])))),
+            '%.3f км'%(t[1]*factor), 
+            '(-%.3f,'%((t[1]-best)*factor), 
+            '%.2f%%)' % ((t[1]-best)*100./best))
 
 def save_top():
     for i,t in enumerate(top):
@@ -95,6 +106,9 @@ def save_top():
         filename = '%d. %s (%.3f km).jpg' % (i+1,'-'.join(np.concatenate([[start],t[0],[finish]])[:,3]),t[1]*factor)
         new_image = cv2.cvtColor(new_image,cv2.COLOR_RGB2BGR)
         cv2.imwrite(path.join(outfolder,filename), new_image)
+    text_file = open(path.join(outfolder,'best_routes.txt'),'w')
+    text_file.write(best_routes)
+    text_file.close()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -105,7 +119,7 @@ if __name__ == '__main__':
     parser.add_argument("-d","--data", help="data filename (result of check_for_mistake.py)",required=True)
     parser.add_argument("--mashtab",help = "mashtab of map",type=int,required=True)
     parser.add_argument("--routes-to-find",help = "number of routes to find",type=int,default=10)
-    parser.add_argument("--neares-points",help = "nearest_points of each to check",type=int,default=6)
+    parser.add_argument("--neares-points",help = "nearest_points of each to check",type=int,default=8)
     parser.add_argument("--penalty-allowed",help = "penalty allowed (in hours) (doesn't support currently)",type=float,default=0.)
     parser.add_argument("--kps-to-skip", help = "number of KPs to skip without penalty",type=int,default=0)
     parser.add_argument("-o",'--out-folder', help = "folder to store top maps")
@@ -132,7 +146,8 @@ if __name__ == '__main__':
     factor = kms_per_pixel
 
     #format data
-    points = pd.read_csv(dat_filename,header=0)
+    points = pd.read_csv(dat_filename,header=0,dtype={'text_digits':'str'})
+    print ('start_name: ',start_name)
     start = getArrayFromPoint(points,start_name)
     finish = getArrayFromPoint(points,finish_name)
     kps = list(kp_gen(kp_in))
@@ -160,7 +175,7 @@ if __name__ == '__main__':
     porog=1e20
     if kps_to_skip == 0:
         for first in (range(len(points))):
-            b = best_route([first],start_distances[first])
+            b = best_route([first],start_distances[first],verbose=False)
     else:
         all_best = []
         for combination in (itertools.combinations(range(1,len(kps),1),len(kps)-kps_to_skip)):
@@ -175,10 +190,10 @@ if __name__ == '__main__':
 
     print ("Top routes:")
     if kps_to_skip == 0:
-        print_top()
+        best_routes = print_top()
     else:
-        print_top_with_skipped()
+        best_routes = print_top_with_skipped()
     if outfolder is not None:
-        print ("Saving top maps to %s" % outfolder)
+        print ("Saving top maps and routes to %s" % outfolder)
         save_top()
 

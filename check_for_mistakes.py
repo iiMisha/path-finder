@@ -147,7 +147,7 @@ class MyScrollbar(Scrollbar):
 	currentEnd = 0.0
 	
 	def set(self, *args):
-		print ('scrollbar',args)
+		#print ('scrollbar',args)
 		self.currentBegin = args[0]
 		self.currentEnd = args[1]
 		Scrollbar.set(self,*args)
@@ -225,7 +225,7 @@ def getXY(event):
     #print('y',gety)
 data = None	
 data_filename = None
-usage = '''python3 read_map_with_canvas.py map.gif(jpg,png) map_info.dat
+usage = '''python3 check_for_mistakes.py map.gif(jpg,png) map_info.dat
 '''
 if __name__ == '__main__':
 	if len(sys.argv)<3:
