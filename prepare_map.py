@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-import cv2
+
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
@@ -8,6 +8,7 @@ import pandas as pd
 from os import listdir
 from os.path import isfile, join
 import sys
+import json
 
 default_penalty=1.
 
@@ -161,7 +162,11 @@ if __name__ == '__main__':
     output_filename = sys.argv[2]
     output_datafile = sys.argv[3]
     points,circles = find_kp(input_filename)
-    points.to_csv(output_datafile,index=False)
+    to_save = {"points":points.to_json()}
+    f = open(output_datafile,'w')
+    f.write(json.dumps(to_save))
+    f.close()
+    #points.to_csv(output_datafile,index=False)
     img_new = plot_circles_on_img(input_filename,points)
     #TODO save image
     img_new = cv2.cvtColor(img_new,cv2.COLOR_BGR2RGB)

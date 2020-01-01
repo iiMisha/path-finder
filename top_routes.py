@@ -9,6 +9,7 @@ from matplotlib import pylab as plt
 import cv2
 from os import path
 import argparse
+import json
 
 def getArrayFromPoint(points,text_name):
     return points[points.text_digits==text_name][['x','y','radius','text_digits']].iloc[0].values
@@ -117,7 +118,7 @@ if __name__ == '__main__':
     parser.add_argument("-f","--finish", help="name of finish point",required=True)
     parser.add_argument( "--kps-in", help="list of KPs in scope of search (5,9-13,SK - possible format)",required=True)
     parser.add_argument("-d","--data", help="data filename (result of check_for_mistake.py)",required=True)
-    parser.add_argument("--mashtab",help = "mashtab of map",type=int,required=True)
+    parser.add_argument("--mashtab",help = "mashtab of map",type=int)
     parser.add_argument("--routes-to-find",help = "number of routes to find",type=int,default=10)
     parser.add_argument("--neares-points",help = "nearest_points of each to check",type=int,default=8)
     parser.add_argument("--penalty-allowed",help = "penalty allowed (in hours) (doesn't support currently)",type=float,default=0.)
@@ -130,7 +131,7 @@ if __name__ == '__main__':
     kp_in = args.kps_in
     dat_filename = args.data
     map_filename = args.map
-    mashtab = args.mashtab
+    mashtab  = args.mashtab
     nearest_points = args.neares_points
     routes_to_find = args.routes_to_find
     penalty_allowed = args.penalty_allowed
@@ -140,13 +141,19 @@ if __name__ == '__main__':
     img = cv2.imread(map_filename)
     img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
     st_297 = max(img.shape[0],img.shape[1])
-    #factor = 1./((st_297/297)*mashtab/1000)
-    sms_per_pixel = 29.7/st_297
-    kms_per_pixel = mashtab*sms_per_pixel/100000
-    factor = kms_per_pixel
+    # #factor = 1./((st_297/297)*mashtab/1000)
+    # sms_per_pixel = 29.7/st_297
+    # kms_per_pixel = mashtab*sms_per_pixel/100000
+    # factor = kms_per_pixel
 
     #format data
-    points = pd.read_csv(dat_filename,header=0,dtype={'text_digits':'str'})
+    #points = pd.read_csv(dat_filename,header=0,dtype={'text_digits':'str'})
+    f = open(dat_filename)
+    all_data = json.load(f)
+    f.close()
+    points = pd.read_json(all_data['points'])
+    factor = all_data['factor']
+
     print ('start_name: ',start_name)
     start = getArrayFromPoint(points,start_name)
     finish = getArrayFromPoint(points,finish_name)

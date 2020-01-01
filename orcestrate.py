@@ -29,7 +29,7 @@ if __name__=='__main__':
 	check_script = 'check_for_mistakes.py'
 	check_script = os.path.join(script_dirname,check_script)
 	print ('Running check map script')
-	print ('Save data before close (just press "s")')
+	print ('Specify scale by right click on both parts of "Mashtab"')
 	os.system("python %s %s %s" % (check_script,tmp_mapfile,tmp_datafile))
 	print ('Check finished')
 
@@ -38,7 +38,7 @@ if __name__=='__main__':
 	start = input('Start point: ')
 	finish = input('Finish point: ')
 	kps_in = input('kps in search (ex. 3,5,7-9,13): ')
-	mashtab = input('Mashtab: ')
+	#mashtab = input('Mashtab: ')
 	kps_to_skip = input('Сколько КП можно пропустить: ')
 	top_routes_script = 'top_routes.py'
 	top_routes_script = os.path.join(script_dirname,top_routes_script)
@@ -46,8 +46,8 @@ if __name__=='__main__':
 	if not os.path.exists(output_dirname):
 		os.makedirs(output_dirname)
 	print ('Running top routes scirpt')
-	command = 'python %s -m %s -s %s -f %s --kps-in %s -d %s --mashtab %s -o %s --kps-to-skip %s' % \
-				(top_routes_script,mapfile,start,finish,kps_in,tmp_datafile,mashtab,output_dirname,kps_to_skip)
+	command = 'python %s -m %s -s %s -f %s --kps-in %s -d %s -o %s --kps-to-skip %s' % \
+				(top_routes_script,mapfile,start,finish,kps_in,tmp_datafile,output_dirname,kps_to_skip)
 	print (command)
 	os.system(command)
 	print ('Done')

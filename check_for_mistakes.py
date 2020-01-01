@@ -8,6 +8,7 @@ from tkinter.messagebox import *
 import json
 import math
 import pandas as pd
+import cv2
 #import tkMessageBox
 
 class Dialog(Toplevel):
@@ -167,7 +168,7 @@ def key(event):
 	global data,data_filename
 	print ("pressed",event.char)
 	if event.char == 's':
-		data.to_csv(data_filename,index=False)
+		save()
 		print ('data saved')
 
 
@@ -192,7 +193,6 @@ def leftClick(event):
 		data.loc[point.name,'text_digits'] = name
 		data.loc[point.name,'penalty'] = penalty
 		print ('KP modified')
-		return
 	else:
 		d = KPDialog(root,'Создание нового КП','KP Name',data.penalty.median())
 		if not d.isApplied:
@@ -202,6 +202,8 @@ def leftClick(event):
 		data = data.append({'x':x,'y':y,'radius':data.radius.median(),
 			'text_digits':name,'penalty':penalty},ignore_index=True)
 		print ('KP added')
+	save()
+	#data.to_csv(data_filename,index=False)
 
 	#TODO: выводить перечень занесенных точек. Определять и исключать дубли. Особенное внесение для стартовой точки.
 
@@ -209,7 +211,35 @@ g_firstClick = True
 g_firstCoords = (0,0)
 g_factor = None
 
-		
+def save():
+	to_save = {"points":data.to_json(),"factor":g_factor}
+	f = open(data_filename,'w')
+	f.write(json.dumps(to_save))
+	f.close()
+
+def rightClick(event): #TODO перейти на realCoordinate
+	global g_firstClick
+	global g_firstCoords
+	global g_factor
+	if g_firstClick:
+		g_firstCoords=(event.x,event.y)
+		g_firstClick = False
+	else:
+		pixels_in_1km_real = math.sqrt(pow(event.x-g_firstCoords[0],2) + pow(event.y-g_firstCoords[1],2))
+		print (pixels_in_1km_real)
+		g_firstClick = True
+		g_factor = 1./pixels_in_1km_real
+		# d = DistanceDialog(root,distance=distance)
+		# if not d.isApplied:
+		# 	g_firstClick = True
+		# 	g_firstCoords = (0,0)
+		# 	return
+		# result = d.result
+		# g_factor = result/distance
+		# text = "Дистанция на 100 точек теперь составляет %f" %(g_factor*100)
+		# showinfo('info',text)
+		# g_firstClick = True
+		# g_firstCoords = (0,0)	
 	
 	
 def getXY(event):
@@ -227,13 +257,21 @@ data = None
 data_filename = None
 usage = '''python3 check_for_mistakes.py map.gif(jpg,png) map_info.dat
 '''
+max_side = None
 if __name__ == '__main__':
 	if len(sys.argv)<3:
 		print (usage)
 		sys.exit(0)
 	map_name = sys.argv[1]
+	img = cv2.imread(map_name)
+	max_side = max(img.shape[0],img.shape[1])
+
 	data_filename = sys.argv[2]
-	data = pd.read_csv(data_filename,dtype={'text_digits':'str'})
+	#data = pd.read_csv(data_filename,dtype={'text_digits':'str'})
+	f = open(data_filename)
+	all_data = json.load(f)
+	f.close()
+	data = pd.read_json(all_data['points'])
 	root=Tk()
 	#root.geometry('1024x1024')
 	frame = Frame(root, width=1200, height=800,bd=2, relief=SUNKEN)
@@ -256,7 +294,7 @@ if __name__ == '__main__':
 	frame.pack()
 
 	canvas.bind('<Button-1>',leftClick)
-	#canvas.bind('<Button-3>',rightClick)
+	canvas.bind('<Button-2>',rightClick)
 	
 	points = []
 	#canvas.bind('<Motion>', getXY)

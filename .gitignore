@@ -3,3 +3,4 @@
 output/
 tmp/
 *.jpg
+**/.DS_Store
