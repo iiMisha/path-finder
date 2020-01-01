@@ -272,6 +272,7 @@ if __name__ == '__main__':
 	all_data = json.load(f)
 	f.close()
 	data = pd.read_json(all_data['points'])
+	data['text_digits'] = data.text_digits.astype('str')
 	root=Tk()
 	#root.geometry('1024x1024')
 	frame = Frame(root, width=1200, height=800,bd=2, relief=SUNKEN)

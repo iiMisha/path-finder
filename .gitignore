@@ -4,3 +4,4 @@ output/
 tmp/
 *.jpg
 **/.DS_Store
+**/best_routes.txt

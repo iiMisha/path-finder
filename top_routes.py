@@ -152,6 +152,7 @@ if __name__ == '__main__':
     all_data = json.load(f)
     f.close()
     points = pd.read_json(all_data['points'])
+    points['text_digits'] = points.text_digits.astype('str')
     factor = all_data['factor']
 
     print ('start_name: ',start_name)

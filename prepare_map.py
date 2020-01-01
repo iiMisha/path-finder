@@ -65,6 +65,7 @@ def parse(new_image,circles):
 
         rows.append([x_coord,y_coord,radius,result,result_digits])
     result = pd.DataFrame(rows,columns = ['x','y','radius','text','text_digits'])
+    result['text_digits'] = result.text_digits.astype('str')
     return result
 
 def find_kp(filename):
