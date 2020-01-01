@@ -16,7 +16,7 @@ Designed to solve choosing parts of [Московский Марш-Бросок 
 
 ## Usage
 
-python orcestrate.py <map_filename>
+```python orcestrate.py <map_filename>```
 
 ## Execution steps
 
