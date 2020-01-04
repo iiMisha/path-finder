@@ -22,7 +22,7 @@ Designed to solve choosing parts of [Московский Марш-Бросок 
 
 Works in 3 steps:
 
-1. Automatically find control points on map using Circle Hough Transform. Then find CP's name using `tesseract` (prepare_map.py)
+1. Automatically find control points on map using Circle Hough Transform. Then find CP's names using `tesseract` (prepare_map.py)
 2. Show map to user to fix mistakes and specify scale (check_for_mistakes.py)
 3. Find best routes and save outputs (top_routes.py)
 

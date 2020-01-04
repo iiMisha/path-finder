@@ -39,7 +39,7 @@ if __name__=='__main__':
 	finish = input('Finish point: ')
 	kps_in = input('kps in search (ex. 3,5,7-9,13): ')
 	#mashtab = input('Mashtab: ')
-	kps_to_skip = input('Сколько КП можно пропустить: ')
+	kps_to_skip = input('Number of CP allowed to skip: ')
 	top_routes_script = 'top_routes.py'
 	top_routes_script = os.path.join(script_dirname,top_routes_script)
 	output_dirname = os.path.join(mapfile_dir,os.path.splitext(mapfile_name)[0])
