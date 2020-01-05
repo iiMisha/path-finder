@@ -1,6 +1,6 @@
 # path-finder
 
-Tool for find shortest paths on map with control points.
+Find shortest paths on map with control points.
 
 Designed to solve choosing parts of [Московский Марш-Бросок (ММБ)](http://mmb.progressor.ru/).
 
