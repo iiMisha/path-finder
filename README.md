@@ -8,7 +8,9 @@ Designed to solve choosing parts of [Московский Марш-Бросок 
 
 - python3 only.
 
-- ```pip install -r requirements.txt```
+- ```pip install -r requirements.txt``` for full version
+
+- ```pip install -r requirements_coord.txt``` for `top_routes_coord.py` only
 
 - Install tesseract ([guide](https://github.com/tesseract-ocr/tesseract/wiki))
 
