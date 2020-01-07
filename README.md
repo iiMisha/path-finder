@@ -1,6 +1,6 @@
 # path-finder
 
-Tool for find shortest paths on map with control points.
+Find shortest paths on map with control points.
 
 Designed to solve choosing parts of [Московский Марш-Бросок (ММБ)](http://mmb.progressor.ru/).
 
@@ -34,7 +34,7 @@ Works in 3 steps:
 2. Show map to user to fix mistakes and specify scale (check_for_mistakes.py)
 3. Find best routes and save outputs (top_routes.py)
 
-## Fixing step
+## Fixing steps
 
 1. You need to check that all CP found (green circle added) and CP's names are correct (black text in green circle).
 You can change name and penalty of CP by left click in CP. Also you can add new CP by left click in free space.
