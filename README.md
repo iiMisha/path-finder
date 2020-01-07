@@ -16,7 +16,15 @@ Designed to solve choosing parts of [Московский Марш-Бросок 
 
 ## Usage
 
+Full version:
+
 ```python orcestrate.py <map_filename>```
+
+Find only text by coordinates file:
+
+```python top_routes_coord.py -s 06 -f SK --kps-in 07,08,09,10-22 -d "maps/mmb2019o-kp.wpt"```
+
+top_routes_coord.py works with either CVS-file ('lat','long','name' colnames in header required) or with wpt-files.
 
 ## Execution steps
 
