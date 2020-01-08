@@ -120,7 +120,7 @@ if __name__ == '__main__':
     parser.add_argument("-d","--data", help="data filename (result of check_for_mistake.py)",required=True)
     parser.add_argument("--mashtab",help = "mashtab of map",type=int)
     parser.add_argument("--routes-to-find",help = "number of routes to find",type=int,default=10)
-    parser.add_argument("--neares-points",help = "nearest_points of each to check",type=int,default=8)
+    parser.add_argument("--nearest-points",help = "nearest_points of each to check",type=int,default=8)
     parser.add_argument("--penalty-allowed",help = "penalty allowed (in hours) (doesn't support currently)",type=float,default=0.)
     parser.add_argument("--kps-to-skip", help = "number of KPs to skip without penalty",type=int,default=0)
     parser.add_argument("-o",'--out-folder', help = "folder to store top maps")
@@ -132,7 +132,7 @@ if __name__ == '__main__':
     dat_filename = args.data
     map_filename = args.map
     mashtab  = args.mashtab
-    nearest_points = args.neares_points
+    nearest_points = args.nearest_points
     routes_to_find = args.routes_to_find
     penalty_allowed = args.penalty_allowed
     kps_to_skip = args.kps_to_skip

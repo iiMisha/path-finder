@@ -11,6 +11,7 @@ import argparse
 import json
 import math
 import io
+import pyproj
 
 # def getArrayFromPoint(points,text_name):
 #     return points[points.text_digits==text_name][['x','y','radius','text_digits']].iloc[0].values
@@ -28,22 +29,34 @@ def route_dist(route):
         dist += distance_matrix[p1,p2]
     return dist + finish_distances[route[-1]]
 
+def distance_euclid(x,y):
+   return np.sqrt((float(x[0])-float(y[0]))**2  + (float(x[1])-float(y[1]))**2)
+
+# def distance(x,y): 
+#     lng_1, lat_1, lng_2, lat_2 = map(math.radians, [x[1], x[0], y[1], y[0]])
+#     d_lat = lat_2 - lat_1
+#     d_lng = lng_2 - lng_1 
+
+#     temp = (  
+#          math.sin(d_lat / 2) ** 2 
+#        + math.cos(lat_1) 
+#        * math.cos(lat_2) 
+#        * math.sin(d_lng / 2) ** 2
+#     )
+
+#     return 6373.0 * (2 * math.atan2(math.sqrt(temp), math.sqrt(1 - temp)))
+
+wsg84 = pyproj.Proj(init="epsg:4326")
+utm_proj = pyproj.Proj("+proj=utm +zone=37v +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
+
 def distance(x,y):
-    return np.sqrt((float(x[0])-float(y[0]))**2  + (float(x[1])-float(y[1]))**2)
+    lng_1, lat_1, lng_2, lat_2 = [x[1], x[0], y[1], y[0]]
+    p1 = pyproj.transform(wsg84,utm_proj,lng_1,lat_1)
+    p2 = pyproj.transform(wsg84,utm_proj,lng_2,lat_2)
+    return distance_euclid(p1,p2)/1000.
 
-def distance(x,y): 
-    lng_1, lat_1, lng_2, lat_2 = map(math.radians, [x[1], x[0], y[1], y[0]])
-    d_lat = lat_2 - lat_1
-    d_lng = lng_2 - lng_1 
-
-    temp = (  
-         math.sin(d_lat / 2) ** 2 
-       + math.cos(lat_1) 
-       * math.cos(lat_2) 
-       * math.sin(d_lng / 2) ** 2
-    )
-
-    return 6373.0 * (2 * math.atan2(math.sqrt(temp), math.sqrt(1 - temp)))
+def transform(p1):
+    return pyproj.transform(wsg84,utm_proj,p1.long,p1.lat)
 
 def register_top(route,dist):
     global top
@@ -140,7 +153,7 @@ if __name__ == '__main__':
     parser.add_argument("-d","--data", help="data filename (result of check_for_mistake.py)",required=True)
     #parser.add_argument("--mashtab",help = "mashtab of map",type=int)
     parser.add_argument("--routes-to-find",help = "number of routes to find",type=int,default=10)
-    parser.add_argument("--neares-points",help = "nearest_points of each to check",type=int,default=8)
+    parser.add_argument("--nearest-points",help = "nearest_points of each to check",type=int,default=8)
     parser.add_argument("--penalty-allowed",help = "penalty allowed (in hours) (doesn't support currently)",type=float,default=0.)
     parser.add_argument("--kps-to-skip", help = "number of KPs to skip without penalty",type=int,default=0)
     parser.add_argument("-o",'--out-folder', help = "folder to store top maps")
@@ -152,7 +165,7 @@ if __name__ == '__main__':
     dat_filename = args.data
     #map_filename = args.map
     # mashtab  = args.mashtab
-    nearest_points = args.neares_points
+    nearest_points = args.nearest_points
     routes_to_find = args.routes_to_find
     penalty_allowed = args.penalty_allowed
     kps_to_skip = args.kps_to_skip
