@@ -144,6 +144,12 @@ def save_top():
     text_file.write(best_routes)
     text_file.close()
 
+def try_int(st):
+    try:
+        return str(int(st))
+    except:
+        return st
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     #parser.add_argument("-m","--map", help="path to map file",required=True)
@@ -184,13 +190,14 @@ if __name__ == '__main__':
         data = f.read()
         csv = '\n'.join(data.split('\n')[4:])
         test_file = io.BytesIO(csv.encode('ascii'))
-        data = pd.read_csv(test_file,header=None)
+        data = pd.read_csv(test_file,header=None,dtype={1:'str'})
         data.columns = ['-1','name','lat','long'] + [i for i in range(4,25)]
-        data_new = data[['name','lat','long']]
+        data_new = data[['name','lat','long']].copy()
         points = data_new
     else:
         points = pd.read_csv(dat_filename,header=0,dtype={'name':'str'})
 
+    points.loc[:,'name'] = points.name.apply(try_int)
     start = getArrayFromPoint(points,start_name)
     finish = getArrayFromPoint(points,finish_name)
     kps = list(kp_gen(kp_in))
