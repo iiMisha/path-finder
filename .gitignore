@@ -1,8 +1,17 @@
+# Operating System files
 .DS_Store
+
+# Python generated files
+__pycache__/
+*.pyc
+
+# Jupyter Notebook specific
 .ipynb_checkpoints/
+
+# Project specific generated/temporary files
 output/
 tmp/
 *.jpg
+best_routes.txt
+
 **/.DS_Store
-**/best_routes.txt
-**/.ipynb_checkpoints/
